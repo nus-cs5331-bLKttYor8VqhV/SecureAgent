@@ -3,6 +3,8 @@
 
 cmake_minimum_required(VERSION 3.11)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if (LVI_MITIGATION MATCHES ControlFlow)
   # Configure the cmake to use customized compilation toolchain.
   # This package has to be added before `project()`.
