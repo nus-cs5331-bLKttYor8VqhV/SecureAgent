@@ -1,12 +1,6 @@
 #include <arpa/inet.h>
 #include <cstdio>
 #include <cstring>
-#include <netinet/in.h>
-#include <openenclave/bits/edl/syscall_types.h>
-#include <openenclave/bits/result.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 #include "helloworld_t.h"
 
