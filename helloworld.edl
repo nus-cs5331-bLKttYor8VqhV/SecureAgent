@@ -3,15 +3,15 @@
 
 enclave {
     from "openenclave/edl/syscall.edl" import *;
+    from "openenclave/edl/socket.edl" import *;
     from "platform.edl" import *;
 
     trusted {
         public void enclave_helloworld();
+        public void enclave_socket();
     };
 
     untrusted {
         void host_helloworld();
     };
 };
-
-

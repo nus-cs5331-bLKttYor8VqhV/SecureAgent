@@ -62,13 +62,15 @@ int main(int argc, const char* argv[])
     }
 
     // Call into the enclave
-    result = enclave_helloworld(enclave);
+    // result = enclave_helloworld(enclave);
+    // if (result != OE_OK) {
+    //     fprintf(stderr, "calling into enclave_helloworld failed: result=%u (%s)\n", result, oe_result_str(result));
+    //     goto exit;
+    // }
+
+    result = enclave_socket(enclave);
     if (result != OE_OK) {
-        fprintf(
-            stderr,
-            "calling into enclave_helloworld failed: result=%u (%s)\n",
-            result,
-            oe_result_str(result));
+        fprintf(stderr, "calling into enclave_socket failed: result=%u (%s)\n", result, oe_result_str(result));
         goto exit;
     }
 
