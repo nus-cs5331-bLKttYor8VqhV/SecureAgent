@@ -11,13 +11,14 @@
 
 bool check_simulate_opt(int* argc, const char* argv[])
 {
-    for (int i = 0; i < *argc; i++)
-    {
-        if (strcmp(argv[i], "--simulate") == 0)
-        {
+    for (int i = 0; i < *argc; i++) {
+        if (strcmp(argv[i], "--simulate") == 0) {
             fprintf(stdout, "Running in simulation mode\n");
-            memmove(&argv[i], &argv[i + 1], (*argc - i) * sizeof(char*));
+
             (*argc)--;
+            for (; i < *argc; i++) {
+                argv[i] = argv[i + 1];
+            }
             return true;
         }
     }
@@ -34,17 +35,15 @@ void host_helloworld()
 int main(int argc, const char* argv[])
 {
     oe_result_t result;
-    int ret = 1;
+    int ret               = 1;
     oe_enclave_t* enclave = NULL;
 
     uint32_t flags = OE_ENCLAVE_FLAG_DEBUG;
-    if (check_simulate_opt(&argc, argv))
-    {
+    if (check_simulate_opt(&argc, argv)) {
         flags |= OE_ENCLAVE_FLAG_SIMULATE;
     }
 
-    if (argc != 2)
-    {
+    if (argc != 2) {
         fprintf(
             stderr, "Usage: %s enclave_image_path [ --simulate  ]\n", argv[0]);
         goto exit;
@@ -53,8 +52,7 @@ int main(int argc, const char* argv[])
     // Create the enclave
     result = oe_create_helloworld_enclave(
         argv[1], OE_ENCLAVE_TYPE_AUTO, flags, NULL, 0, &enclave);
-    if (result != OE_OK)
-    {
+    if (result != OE_OK) {
         fprintf(
             stderr,
             "oe_create_helloworld_enclave(): result=%u (%s)\n",
@@ -65,8 +63,7 @@ int main(int argc, const char* argv[])
 
     // Call into the enclave
     result = enclave_helloworld(enclave);
-    if (result != OE_OK)
-    {
+    if (result != OE_OK) {
         fprintf(
             stderr,
             "calling into enclave_helloworld failed: result=%u (%s)\n",

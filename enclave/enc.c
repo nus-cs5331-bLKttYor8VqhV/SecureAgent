@@ -22,8 +22,7 @@ void enclave_helloworld()
 
     // Call back into the host
     oe_result_t result = host_helloworld();
-    if (result != OE_OK)
-    {
+    if (result != OE_OK) {
         fprintf(
             stderr,
             "Call to host_helloworld failed: result=%u (%s)\n",
