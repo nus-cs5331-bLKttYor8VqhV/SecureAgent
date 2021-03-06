@@ -7,11 +7,10 @@ enclave {
     from "platform.edl" import *;
 
     trusted {
-        public void enclave_helloworld();
-        public void enclave_socket();
+        public void enclave_https();
     };
 
     untrusted {
-        void host_helloworld();
+        // void host_helloworld();
     };
 };

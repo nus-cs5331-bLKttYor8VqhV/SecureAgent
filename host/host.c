@@ -25,13 +25,6 @@ bool check_simulate_opt(int* argc, const char* argv[])
     return false;
 }
 
-// This is the function that the enclave will call back into to
-// print a message.
-void host_helloworld()
-{
-    fprintf(stdout, "Enclave called into host to print: Hello World!\n");
-}
-
 int main(int argc, const char* argv[])
 {
     oe_result_t result;
@@ -44,33 +37,20 @@ int main(int argc, const char* argv[])
     }
 
     if (argc != 2) {
-        fprintf(
-            stderr, "Usage: %s enclave_image_path [ --simulate  ]\n", argv[0]);
+        fprintf(stderr, "Usage: %s enclave_image_path [ --simulate  ]\n", argv[0]);
         goto exit;
     }
 
     // Create the enclave
-    result = oe_create_helloworld_enclave(
-        argv[1], OE_ENCLAVE_TYPE_AUTO, flags, NULL, 0, &enclave);
+    result = oe_create_helloworld_enclave(argv[1], OE_ENCLAVE_TYPE_AUTO, flags, NULL, 0, &enclave);
     if (result != OE_OK) {
-        fprintf(
-            stderr,
-            "oe_create_helloworld_enclave(): result=%u (%s)\n",
-            result,
-            oe_result_str(result));
+        fprintf(stderr, "oe_create_helloworld_enclave(): result=%u (%s)\n", result, oe_result_str(result));
         goto exit;
     }
 
-    // Call into the enclave
-    // result = enclave_helloworld(enclave);
-    // if (result != OE_OK) {
-    //     fprintf(stderr, "calling into enclave_helloworld failed: result=%u (%s)\n", result, oe_result_str(result));
-    //     goto exit;
-    // }
-
-    result = enclave_socket(enclave);
+    result = enclave_https(enclave);
     if (result != OE_OK) {
-        fprintf(stderr, "calling into enclave_socket failed: result=%u (%s)\n", result, oe_result_str(result));
+        fprintf(stderr, "calling into enclave_https failed: result=%u (%s)\n", result, oe_result_str(result));
         goto exit;
     }
 
