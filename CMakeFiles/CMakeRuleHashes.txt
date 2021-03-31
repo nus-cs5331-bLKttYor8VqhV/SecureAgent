@@ -1,0 +1,8 @@
+# Hashes of file build rules.
+9239dff01cf4a483b7875e34d146c27f CMakeFiles/run
+baa39a2e9dcbe9b2d47264f8e3fc54cf CMakeFiles/sign
+6d1288ec63848cac3df39982a1bc4153 CMakeFiles/simulate
+9128580e05879ebe27d81423883c48f3 enclave/enclave.signed
+c9ec0e7995b05e66a29add21ad0b820c enclave/helloworld_t.h
+1cacf8d4eb3778b752412b821f2480be host/helloworld_u.h
+86f7f5db5a8b8209480224453cc64429 private.pem

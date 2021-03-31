@@ -1,0 +1,11 @@
+/synced/samples/SecureAgent/CMakeFiles/edit_cache.dir
+/synced/samples/SecureAgent/CMakeFiles/simulate.dir
+/synced/samples/SecureAgent/CMakeFiles/run.dir
+/synced/samples/SecureAgent/CMakeFiles/rebuild_cache.dir
+/synced/samples/SecureAgent/CMakeFiles/sign.dir
+/synced/samples/SecureAgent/enclave/CMakeFiles/rebuild_cache.dir
+/synced/samples/SecureAgent/enclave/CMakeFiles/edit_cache.dir
+/synced/samples/SecureAgent/enclave/CMakeFiles/enclave.dir
+/synced/samples/SecureAgent/host/CMakeFiles/rebuild_cache.dir
+/synced/samples/SecureAgent/host/CMakeFiles/edit_cache.dir
+/synced/samples/SecureAgent/host/CMakeFiles/helloworld_host.dir
