@@ -41,14 +41,28 @@ int main(int argc, const char* argv[])
         goto exit;
     }
 
+    oe_enclave_setting_context_switchless_t switchless_setting = {
+        1,  // number of host worker threads
+        0}; // number of enclave worker threads.
+    oe_enclave_setting_t settings[] = {{
+        .setting_type = OE_ENCLAVE_SETTING_CONTEXT_SWITCHLESS,
+        .u.context_switchless_setting = &switchless_setting,
+    }};
+
     // Create the enclave
-    result = oe_create_helloworld_enclave(argv[1], OE_ENCLAVE_TYPE_AUTO, flags, NULL, 0, &enclave);
+    result = oe_create_helloworld_enclave(argv[1], OE_ENCLAVE_TYPE_SGX, flags, settings, OE_COUNTOF(settings), &enclave);
     if (result != OE_OK) {
         fprintf(stderr, "oe_create_helloworld_enclave(): result=%u (%s)\n", result, oe_result_str(result));
         goto exit;
     }
 
-    result = enclave_https(enclave);
+    result = initialize_enclave(enclave);
+    if (result != OE_OK) {
+        fprintf(stderr, "calling into enclave_https failed: result=%u (%s)\n", result, oe_result_str(result));
+        goto exit;
+    }
+
+    result = call_test_2(enclave);
     if (result != OE_OK) {
         fprintf(stderr, "calling into enclave_https failed: result=%u (%s)\n", result, oe_result_str(result));
         goto exit;

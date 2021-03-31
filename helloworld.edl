@@ -7,7 +7,9 @@ enclave {
     from "platform.edl" import *;
 
     trusted {
-        public void enclave_https();
+        public void initialize_enclave();
+        public void call_test();
+        public void call_test_2() transition_using_threads; 
     };
 
     untrusted {

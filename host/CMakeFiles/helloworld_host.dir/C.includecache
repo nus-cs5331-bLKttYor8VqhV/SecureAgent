@@ -88,34 +88,6 @@ defs.h
 openenclave/bits/types.h
 -
 
-/opt/openenclave/include/openenclave/edger8r/common.h
-openenclave/bits/defs.h
--
-openenclave/bits/result.h
--
-openenclave/bits/types.h
--
-
-/opt/openenclave/include/openenclave/edger8r/host.h
-openenclave/bits/defs.h
--
-openenclave/bits/result.h
--
-openenclave/bits/types.h
--
-openenclave/edger8r/common.h
--
-openenclave/host.h
--
-errno.h
--
-stdlib.h
--
-string.h
--
-wchar.h
--
-
 /opt/openenclave/include/openenclave/host.h
 openenclave/bits/asym_keys.h
 -
@@ -165,12 +137,6 @@ openenclave/bits/types.h
 /synced/samples/SecureAgent/host/openenclave/bits/types.h
 openenclave/bits/sgx/sgxtypes.h
 /synced/samples/SecureAgent/host/openenclave/bits/sgx/sgxtypes.h
-
-/synced/samples/SecureAgent/host/helloworld_u.c
-helloworld_u.h
-/synced/samples/SecureAgent/host/helloworld_u.h
-openenclave/edger8r/host.h
--
 
 /synced/samples/SecureAgent/host/helloworld_u.h
 openenclave/host.h
