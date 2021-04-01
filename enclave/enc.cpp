@@ -5,7 +5,7 @@
 #include "TLSStream.hpp"
 #include "helloworld_t.h"
 
-TLSClient *enclave_client;
+TLSClient* enclave_client;
 
 /* void enclave_https()
 {
@@ -39,9 +39,10 @@ void initialize_enclave()
     }
 }
 
-void connect_enclave(const char* server_host, const char* server_port){
+void connect_enclave(const char* server_host, const char* server_port)
+{
     try {
-        if(enclave_client == NULL){
+        if (enclave_client == NULL) {
             initialize_enclave();
         }
         enclave_client->connect(server_host, server_port);
@@ -51,7 +52,8 @@ void connect_enclave(const char* server_host, const char* server_port){
     }
 }
 
-void request_enclave(const char* http_request){
+void request_enclave(const char* http_request)
+{
     // Check if connected
     try {
         enclave_client->send((const unsigned char*)http_request, strlen(http_request));
@@ -61,7 +63,8 @@ void request_enclave(const char* http_request){
     }
 }
 
-void receive_enclave(char* buf, int len){
+void receive_enclave(char* buf, int len)
+{
     try {
         enclave_client->recv((unsigned char*)buf, len);
         puts("[+] Response printed");

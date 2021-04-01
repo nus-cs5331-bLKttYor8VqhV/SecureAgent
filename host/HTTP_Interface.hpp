@@ -10,7 +10,8 @@ public:
         initialize_enclave(enclave);
     };
 
-    HTTP_Interface(const char* enclave_sign, const char* hostname, const char* port) { 
+    HTTP_Interface(const char* enclave_sign, const char* hostname, const char* port)
+    {
         puts("[+] Creating interface");
         create_enclave(enclave_sign);
         // ECALL to initialize the enclave socket
@@ -69,9 +70,10 @@ public:
 private:
     oe_enclave_t* enclave { NULL };
 
-    void create_enclave(const char* enclave_sign){
+    void create_enclave(const char* enclave_sign)
+    {
         oe_result_t result;
-        uint32_t flags = OE_ENCLAVE_FLAG_DEBUG | OE_ENCLAVE_FLAG_SIMULATE;
+        uint32_t flags                                             = OE_ENCLAVE_FLAG_DEBUG | OE_ENCLAVE_FLAG_SIMULATE;
         oe_enclave_setting_context_switchless_t switchless_setting = { 1, // number of host worker threads
             0 };                                                          // number of enclave worker threads.
         oe_enclave_setting_t settings[]                            = { {
