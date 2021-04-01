@@ -35,22 +35,6 @@ bool check_simulate_opt(int* argc, const char* argv[])
     return false;
 }
 
-<<<<<<< Updated upstream:host/host.c
-void connect(){
-
-}
-
-void request(){
-    
-}
-
-void get_response(){
-    
-}
-
-void close(){
-    
-=======
 int e_request(oe_enclave_t* enclave, const char* request){
     oe_result_t result = request_enclave(enclave, request);
     if (result != OE_OK) {
@@ -84,7 +68,6 @@ int e_connect(oe_enclave_t* enclave, const char* server_host, const char* server
         return -1;
     }
     return 0;
->>>>>>> Stashed changes:host/host.cpp
 }
 
 int main(int argc, const char* argv[])

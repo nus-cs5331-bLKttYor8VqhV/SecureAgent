@@ -39,6 +39,7 @@ host/CMakeFiles/helloworld_host.dir/host.cpp.o: /opt/openenclave/include/openenc
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: /opt/openenclave/include/openenclave/corelibc/bits/types.h
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: /opt/openenclave/include/openenclave/host.h
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: /opt/openenclave/include/openenclave/host_verify.h
+host/CMakeFiles/helloworld_host.dir/host.cpp.o: host/HTTP_Interface.hpp
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: host/helloworld_args.h
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: host/helloworld_u.h
 host/CMakeFiles/helloworld_host.dir/host.cpp.o: host/host.cpp

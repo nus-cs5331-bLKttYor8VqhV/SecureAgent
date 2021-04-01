@@ -40,6 +40,7 @@ host/CMakeFiles/helloworld_host.dir/host.cpp.o
  /opt/openenclave/include/openenclave/corelibc/bits/types.h
  /opt/openenclave/include/openenclave/host.h
  /opt/openenclave/include/openenclave/host_verify.h
+ /synced/samples/SecureAgent/host/HTTP_Interface.hpp
  /synced/samples/SecureAgent/host/helloworld_args.h
  /synced/samples/SecureAgent/host/helloworld_u.h
  /synced/samples/SecureAgent/host/host.cpp
