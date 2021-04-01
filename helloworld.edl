@@ -13,6 +13,9 @@ enclave {
     };
 
     untrusted {
-        // void host_helloworld();
+        void connect();
+        void request();
+        void get_response();
+        void close();
     };
 };

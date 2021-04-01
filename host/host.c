@@ -25,6 +25,22 @@ bool check_simulate_opt(int* argc, const char* argv[])
     return false;
 }
 
+void connect(){
+
+}
+
+void request(){
+    
+}
+
+void get_response(){
+    
+}
+
+void close(){
+    
+}
+
 int main(int argc, const char* argv[])
 {
     oe_result_t result;
