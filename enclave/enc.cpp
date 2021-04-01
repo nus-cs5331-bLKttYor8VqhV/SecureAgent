@@ -64,7 +64,6 @@ void request_enclave(const char* http_request){
 void receive_enclave(char* buf, int len){
     try {
         enclave_client->recv((unsigned char*)buf, len);
-        puts(buf);
         puts("[+] Response printed");
     } catch (MbedException& err) {
         fprintf(stderr, "%s %s\n", __FUNCTION__, err.what());

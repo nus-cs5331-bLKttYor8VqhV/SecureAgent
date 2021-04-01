@@ -15,9 +15,5 @@ enclave {
     };
 
     untrusted {
-        void connect();
-        void request();
-        void get_response();
-        void close();
     };
 };
