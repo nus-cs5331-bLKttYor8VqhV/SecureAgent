@@ -171,32 +171,32 @@ helloworld_u.c.s:
 	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/helloworld_u.c.s
 .PHONY : helloworld_u.c.s
 
-host.o: host.c.o
+host.o: host.cpp.o
 
 .PHONY : host.o
 
 # target to build an object file
-host.c.o:
-	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.c.o
-.PHONY : host.c.o
+host.cpp.o:
+	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.cpp.o
+.PHONY : host.cpp.o
 
-host.i: host.c.i
+host.i: host.cpp.i
 
 .PHONY : host.i
 
 # target to preprocess a source file
-host.c.i:
-	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.c.i
-.PHONY : host.c.i
+host.cpp.i:
+	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.cpp.i
+.PHONY : host.cpp.i
 
-host.s: host.c.s
+host.s: host.cpp.s
 
 .PHONY : host.s
 
 # target to generate assembly for a file
-host.c.s:
-	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.c.s
-.PHONY : host.c.s
+host.cpp.s:
+	cd /synced/samples/SecureAgent && $(MAKE) $(MAKESILENT) -f host/CMakeFiles/helloworld_host.dir/build.make host/CMakeFiles/helloworld_host.dir/host.cpp.s
+.PHONY : host.cpp.s
 
 # Help Target
 help:

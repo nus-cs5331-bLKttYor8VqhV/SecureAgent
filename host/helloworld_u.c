@@ -11,6 +11,7 @@ OE_EXTERNC_BEGIN
 enum
 {
     helloworld_fcn_id_initialize_enclave = 0,
+<<<<<<< Updated upstream
     helloworld_fcn_id_call_test = 1,
     helloworld_fcn_id_call_test_2 = 2,
     helloworld_fcn_id_oe_get_sgx_report_ecall = 3,
@@ -18,6 +19,17 @@ enum
     helloworld_fcn_id_oe_verify_local_report_ecall = 5,
     helloworld_fcn_id_oe_sgx_init_context_switchless_ecall = 6,
     helloworld_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 7,
+=======
+    helloworld_fcn_id_connect_enclave = 1,
+    helloworld_fcn_id_request_enclave = 2,
+    helloworld_fcn_id_receive_enclave = 3,
+    helloworld_fcn_id_close_enclave = 4,
+    helloworld_fcn_id_oe_get_sgx_report_ecall = 5,
+    helloworld_fcn_id_oe_get_report_v2_ecall = 6,
+    helloworld_fcn_id_oe_verify_local_report_ecall = 7,
+    helloworld_fcn_id_oe_sgx_init_context_switchless_ecall = 8,
+    helloworld_fcn_id_oe_sgx_switchless_enclave_worker_thread_ecall = 9,
+>>>>>>> Stashed changes
     helloworld_fcn_id_trusted_call_id_max = OE_ENUM_MAX
 };
 
@@ -25,8 +37,15 @@ enum
 static const oe_ecall_info_t __helloworld_ecall_info_table[] = 
 {
     { "initialize_enclave" },
+<<<<<<< Updated upstream
     { "call_test" },
     { "call_test_2" },
+=======
+    { "connect_enclave" },
+    { "request_enclave" },
+    { "receive_enclave" },
+    { "close_enclave" },
+>>>>>>> Stashed changes
     { "oe_get_sgx_report_ecall" },
     { "oe_get_report_v2_ecall" },
     { "oe_verify_local_report_ecall" },
@@ -42,19 +61,52 @@ typedef struct _initialize_enclave_args_t
     size_t deepcopy_out_buffer_size;
 } initialize_enclave_args_t;
 
+<<<<<<< Updated upstream
 typedef struct _call_test_args_t
+=======
+typedef struct _connect_enclave_args_t
+>>>>>>> Stashed changes
 {
     oe_result_t _result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
+<<<<<<< Updated upstream
 } call_test_args_t;
 
 typedef struct _call_test_2_args_t
+=======
+    char* server_host;
+    char* server_port;
+} connect_enclave_args_t;
+
+typedef struct _request_enclave_args_t
+>>>>>>> Stashed changes
 {
     oe_result_t _result;
     uint8_t* deepcopy_out_buffer;
     size_t deepcopy_out_buffer_size;
+<<<<<<< Updated upstream
 } call_test_2_args_t;
+=======
+    char* http_request;
+} request_enclave_args_t;
+
+typedef struct _receive_enclave_args_t
+{
+    oe_result_t _result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+    char* buf;
+    int len;
+} receive_enclave_args_t;
+
+typedef struct _close_enclave_args_t
+{
+    oe_result_t _result;
+    uint8_t* deepcopy_out_buffer;
+    size_t deepcopy_out_buffer_size;
+} close_enclave_args_t;
+>>>>>>> Stashed changes
 
 typedef struct _oe_get_sgx_report_ecall_args_t
 {
@@ -162,7 +214,11 @@ oe_result_t helloworld_initialize_enclave(oe_enclave_t* enclave)
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
 
     /* Call enclave function. */
+<<<<<<< Updated upstream
     if ((_result = oe_call_enclave_function(
+=======
+    if ((_result = oe_switchless_call_enclave_function(
+>>>>>>> Stashed changes
              enclave,
              &global_id,
              __helloworld_ecall_info_table[helloworld_fcn_id_initialize_enclave].name,
@@ -204,14 +260,25 @@ done:
 
 OE_WEAK_ALIAS(helloworld_initialize_enclave, initialize_enclave);
 
+<<<<<<< Updated upstream
 oe_result_t helloworld_call_test(oe_enclave_t* enclave)
+=======
+oe_result_t helloworld_connect_enclave(
+    oe_enclave_t* enclave,
+    const char* server_host,
+    const char* server_port)
+>>>>>>> Stashed changes
 {
     oe_result_t _result = OE_FAILURE;
 
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
+<<<<<<< Updated upstream
     call_test_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+=======
+    connect_enclave_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+>>>>>>> Stashed changes
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -225,6 +292,7 @@ oe_result_t helloworld_call_test(oe_enclave_t* enclave)
 
     /* Fill marshalling struct. */
     memset(&_args, 0, sizeof(_args));
+<<<<<<< Updated upstream
 
     /* Compute input buffer size. Include in and in-out parameters. */
     OE_ADD_SIZE(_input_buffer_size, sizeof(call_test_args_t));
@@ -232,6 +300,17 @@ oe_result_t helloworld_call_test(oe_enclave_t* enclave)
     
     /* Compute output buffer size. Include out and in-out parameters. */
     OE_ADD_SIZE(_output_buffer_size, sizeof(call_test_args_t));
+=======
+    _args.server_host = server_host;
+    _args.server_port = server_port;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(connect_enclave_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(connect_enclave_args_t));
+>>>>>>> Stashed changes
     /* There were no corresponding parameters. */
     
     /* Allocate marshalling buffer. */
@@ -247,7 +326,11 @@ oe_result_t helloworld_call_test(oe_enclave_t* enclave)
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
+<<<<<<< Updated upstream
     _pargs_in = (call_test_args_t*)_input_buffer;
+=======
+    _pargs_in = (connect_enclave_args_t*)_input_buffer;
+>>>>>>> Stashed changes
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     /* There were no in nor in-out parameters. */
     
@@ -255,10 +338,16 @@ oe_result_t helloworld_call_test(oe_enclave_t* enclave)
     memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
 
     /* Call enclave function. */
+<<<<<<< Updated upstream
     if ((_result = oe_call_enclave_function(
              enclave,
              &global_id,
              __helloworld_ecall_info_table[helloworld_fcn_id_call_test].name,
+=======
+    if ((_result = oe_switchless_call_enclave_function(
+             enclave,
+             &global_id,
+             __helloworld_ecall_info_table[helloworld_fcn_id_connect_enclave].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -267,7 +356,7 @@ oe_result_t helloworld_call_test(oe_enclave_t* enclave)
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (call_test_args_t*)_output_buffer;
+    _pargs_out = (connect_enclave_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -295,16 +384,18 @@ done:
     return _result;
 }
 
-OE_WEAK_ALIAS(helloworld_call_test, call_test);
+OE_WEAK_ALIAS(helloworld_connect_enclave, connect_enclave);
 
-oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
+oe_result_t helloworld_request_enclave(
+    oe_enclave_t* enclave,
+    const char* http_request)
 {
     oe_result_t _result = OE_FAILURE;
 
     static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
 
     /* Marshalling struct. */
-    call_test_2_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    request_enclave_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
     /* Marshalling buffer and sizes. */
     size_t _input_buffer_size = 0;
     size_t _output_buffer_size = 0;
@@ -318,13 +409,14 @@ oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
 
     /* Fill marshalling struct. */
     memset(&_args, 0, sizeof(_args));
+    _args.http_request = http_request;
 
     /* Compute input buffer size. Include in and in-out parameters. */
-    OE_ADD_SIZE(_input_buffer_size, sizeof(call_test_2_args_t));
+    OE_ADD_SIZE(_input_buffer_size, sizeof(request_enclave_args_t));
     /* There were no corresponding parameters. */
     
     /* Compute output buffer size. Include out and in-out parameters. */
-    OE_ADD_SIZE(_output_buffer_size, sizeof(call_test_2_args_t));
+    OE_ADD_SIZE(_output_buffer_size, sizeof(request_enclave_args_t));
     /* There were no corresponding parameters. */
     
     /* Allocate marshalling buffer. */
@@ -340,7 +432,7 @@ oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
     }
     
     /* Serialize buffer inputs (in and in-out parameters). */
-    _pargs_in = (call_test_2_args_t*)_input_buffer;
+    _pargs_in = (request_enclave_args_t*)_input_buffer;
     OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
     /* There were no in nor in-out parameters. */
     
@@ -351,7 +443,7 @@ oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
     if ((_result = oe_switchless_call_enclave_function(
              enclave,
              &global_id,
-             __helloworld_ecall_info_table[helloworld_fcn_id_call_test_2].name,
+             __helloworld_ecall_info_table[helloworld_fcn_id_request_enclave].name,
              _input_buffer,
              _input_buffer_size,
              _output_buffer,
@@ -360,7 +452,7 @@ oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
         goto done;
 
     /* Setup output arg struct pointer. */
-    _pargs_out = (call_test_2_args_t*)_output_buffer;
+    _pargs_out = (request_enclave_args_t*)_output_buffer;
     OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
     
     /* Check if the call succeeded. */
@@ -388,7 +480,237 @@ done:
     return _result;
 }
 
+OE_WEAK_ALIAS(helloworld_request_enclave, request_enclave);
+
+oe_result_t helloworld_receive_enclave(
+    oe_enclave_t* enclave,
+    char* buf,
+    int len)
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+    receive_enclave_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+    _args.buf = buf;
+    _args.len = len;
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+    OE_ADD_SIZE(_input_buffer_size, sizeof(receive_enclave_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(receive_enclave_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+    _pargs_in = (receive_enclave_args_t*)_input_buffer;
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    /* There were no in nor in-out parameters. */
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_switchless_call_enclave_function(
+             enclave,
+             &global_id,
+             __helloworld_ecall_info_table[helloworld_fcn_id_receive_enclave].name,
+>>>>>>> Stashed changes
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+<<<<<<< Updated upstream
+    _pargs_out = (call_test_args_t*)_output_buffer;
+=======
+    _pargs_out = (receive_enclave_args_t*)_output_buffer;
+>>>>>>> Stashed changes
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->_result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    /* No return value. */
+
+    /* There were no out nor in-out parameters. */
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+<<<<<<< Updated upstream
+OE_WEAK_ALIAS(helloworld_call_test, call_test);
+
+oe_result_t helloworld_call_test_2(oe_enclave_t* enclave)
+=======
+OE_WEAK_ALIAS(helloworld_receive_enclave, receive_enclave);
+
+oe_result_t helloworld_close_enclave(oe_enclave_t* enclave)
+>>>>>>> Stashed changes
+{
+    oe_result_t _result = OE_FAILURE;
+
+    static uint64_t global_id = OE_GLOBAL_ECALL_ID_NULL;
+
+    /* Marshalling struct. */
+<<<<<<< Updated upstream
+    call_test_2_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+=======
+    close_enclave_args_t _args, *_pargs_in = NULL, *_pargs_out = NULL;
+>>>>>>> Stashed changes
+    /* Marshalling buffer and sizes. */
+    size_t _input_buffer_size = 0;
+    size_t _output_buffer_size = 0;
+    size_t _total_buffer_size = 0;
+    uint8_t* _buffer = NULL;
+    uint8_t* _input_buffer = NULL;
+    uint8_t* _output_buffer = NULL;
+    size_t _input_buffer_offset = 0;
+    size_t _output_buffer_offset = 0;
+    size_t _output_bytes_written = 0;
+
+    /* Fill marshalling struct. */
+    memset(&_args, 0, sizeof(_args));
+
+    /* Compute input buffer size. Include in and in-out parameters. */
+<<<<<<< Updated upstream
+    OE_ADD_SIZE(_input_buffer_size, sizeof(call_test_2_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(call_test_2_args_t));
+=======
+    OE_ADD_SIZE(_input_buffer_size, sizeof(close_enclave_args_t));
+    /* There were no corresponding parameters. */
+    
+    /* Compute output buffer size. Include out and in-out parameters. */
+    OE_ADD_SIZE(_output_buffer_size, sizeof(close_enclave_args_t));
+>>>>>>> Stashed changes
+    /* There were no corresponding parameters. */
+    
+    /* Allocate marshalling buffer. */
+    _total_buffer_size = _input_buffer_size;
+    OE_ADD_SIZE(_total_buffer_size, _output_buffer_size);
+    _buffer = (uint8_t*)oe_malloc(_total_buffer_size);
+    _input_buffer = _buffer;
+    _output_buffer = _buffer + _input_buffer_size;
+    if (_buffer == NULL)
+    {
+        _result = OE_OUT_OF_MEMORY;
+        goto done;
+    }
+    
+    /* Serialize buffer inputs (in and in-out parameters). */
+<<<<<<< Updated upstream
+    _pargs_in = (call_test_2_args_t*)_input_buffer;
+=======
+    _pargs_in = (close_enclave_args_t*)_input_buffer;
+>>>>>>> Stashed changes
+    OE_ADD_SIZE(_input_buffer_offset, sizeof(*_pargs_in));
+    /* There were no in nor in-out parameters. */
+    
+    /* Copy args structure (now filled) to input buffer. */
+    memcpy(_pargs_in, &_args, sizeof(*_pargs_in));
+
+    /* Call enclave function. */
+    if ((_result = oe_switchless_call_enclave_function(
+             enclave,
+             &global_id,
+<<<<<<< Updated upstream
+             __helloworld_ecall_info_table[helloworld_fcn_id_call_test_2].name,
+=======
+             __helloworld_ecall_info_table[helloworld_fcn_id_close_enclave].name,
+>>>>>>> Stashed changes
+             _input_buffer,
+             _input_buffer_size,
+             _output_buffer,
+             _output_buffer_size,
+             &_output_bytes_written)) != OE_OK)
+        goto done;
+
+    /* Setup output arg struct pointer. */
+<<<<<<< Updated upstream
+    _pargs_out = (call_test_2_args_t*)_output_buffer;
+=======
+    _pargs_out = (close_enclave_args_t*)_output_buffer;
+>>>>>>> Stashed changes
+    OE_ADD_SIZE(_output_buffer_offset, sizeof(*_pargs_out));
+    
+    /* Check if the call succeeded. */
+    if ((_result = _pargs_out->_result) != OE_OK)
+        goto done;
+
+    /* Currently exactly _output_buffer_size bytes must be written. */
+    if (_output_bytes_written != _output_buffer_size)
+    {
+        _result = OE_FAILURE;
+        goto done;
+    }
+
+    /* Unmarshal return value and out, in-out parameters. */
+    /* No return value. */
+
+    /* There were no out nor in-out parameters. */
+
+    _result = OE_OK;
+
+done:
+    if (_buffer)
+        oe_free(_buffer);
+
+    return _result;
+}
+
+<<<<<<< Updated upstream
 OE_WEAK_ALIAS(helloworld_call_test_2, call_test_2);
+=======
+OE_WEAK_ALIAS(helloworld_close_enclave, close_enclave);
+>>>>>>> Stashed changes
 
 oe_result_t helloworld_oe_get_sgx_report_ecall(
     oe_enclave_t* enclave,
@@ -907,6 +1229,7 @@ OE_WEAK_ALIAS(helloworld_oe_sgx_switchless_enclave_worker_thread_ecall, oe_sgx_s
 /**** Untrusted function IDs. ****/
 enum
 {
+<<<<<<< Updated upstream
     helloworld_fcn_id_connect = 0,
     helloworld_fcn_id_request = 1,
     helloworld_fcn_id_get_response = 2,
@@ -993,10 +1316,95 @@ enum
     helloworld_fcn_id_oe_sgx_thread_wake_wait_ocall = 83,
     helloworld_fcn_id_oe_sgx_wake_switchless_worker_ocall = 84,
     helloworld_fcn_id_oe_sgx_sleep_switchless_worker_ocall = 85,
+=======
+    helloworld_fcn_id_oe_syscall_epoll_create1_ocall = 0,
+    helloworld_fcn_id_oe_syscall_epoll_wait_ocall = 1,
+    helloworld_fcn_id_oe_syscall_epoll_wake_ocall = 2,
+    helloworld_fcn_id_oe_syscall_epoll_ctl_ocall = 3,
+    helloworld_fcn_id_oe_syscall_epoll_close_ocall = 4,
+    helloworld_fcn_id_oe_syscall_open_ocall = 5,
+    helloworld_fcn_id_oe_syscall_read_ocall = 6,
+    helloworld_fcn_id_oe_syscall_write_ocall = 7,
+    helloworld_fcn_id_oe_syscall_readv_ocall = 8,
+    helloworld_fcn_id_oe_syscall_writev_ocall = 9,
+    helloworld_fcn_id_oe_syscall_lseek_ocall = 10,
+    helloworld_fcn_id_oe_syscall_pread_ocall = 11,
+    helloworld_fcn_id_oe_syscall_pwrite_ocall = 12,
+    helloworld_fcn_id_oe_syscall_close_ocall = 13,
+    helloworld_fcn_id_oe_syscall_flock_ocall = 14,
+    helloworld_fcn_id_oe_syscall_fsync_ocall = 15,
+    helloworld_fcn_id_oe_syscall_fdatasync_ocall = 16,
+    helloworld_fcn_id_oe_syscall_dup_ocall = 17,
+    helloworld_fcn_id_oe_syscall_opendir_ocall = 18,
+    helloworld_fcn_id_oe_syscall_readdir_ocall = 19,
+    helloworld_fcn_id_oe_syscall_rewinddir_ocall = 20,
+    helloworld_fcn_id_oe_syscall_closedir_ocall = 21,
+    helloworld_fcn_id_oe_syscall_stat_ocall = 22,
+    helloworld_fcn_id_oe_syscall_fstat_ocall = 23,
+    helloworld_fcn_id_oe_syscall_access_ocall = 24,
+    helloworld_fcn_id_oe_syscall_link_ocall = 25,
+    helloworld_fcn_id_oe_syscall_unlink_ocall = 26,
+    helloworld_fcn_id_oe_syscall_rename_ocall = 27,
+    helloworld_fcn_id_oe_syscall_truncate_ocall = 28,
+    helloworld_fcn_id_oe_syscall_ftruncate_ocall = 29,
+    helloworld_fcn_id_oe_syscall_mkdir_ocall = 30,
+    helloworld_fcn_id_oe_syscall_rmdir_ocall = 31,
+    helloworld_fcn_id_oe_syscall_fcntl_ocall = 32,
+    helloworld_fcn_id_oe_syscall_ioctl_ocall = 33,
+    helloworld_fcn_id_oe_syscall_poll_ocall = 34,
+    helloworld_fcn_id_oe_syscall_kill_ocall = 35,
+    helloworld_fcn_id_oe_syscall_close_socket_ocall = 36,
+    helloworld_fcn_id_oe_syscall_socket_ocall = 37,
+    helloworld_fcn_id_oe_syscall_shutdown_sockets_device_ocall = 38,
+    helloworld_fcn_id_oe_syscall_socketpair_ocall = 39,
+    helloworld_fcn_id_oe_syscall_connect_ocall = 40,
+    helloworld_fcn_id_oe_syscall_accept_ocall = 41,
+    helloworld_fcn_id_oe_syscall_bind_ocall = 42,
+    helloworld_fcn_id_oe_syscall_listen_ocall = 43,
+    helloworld_fcn_id_oe_syscall_recvmsg_ocall = 44,
+    helloworld_fcn_id_oe_syscall_sendmsg_ocall = 45,
+    helloworld_fcn_id_oe_syscall_recv_ocall = 46,
+    helloworld_fcn_id_oe_syscall_recvfrom_ocall = 47,
+    helloworld_fcn_id_oe_syscall_send_ocall = 48,
+    helloworld_fcn_id_oe_syscall_sendto_ocall = 49,
+    helloworld_fcn_id_oe_syscall_recvv_ocall = 50,
+    helloworld_fcn_id_oe_syscall_sendv_ocall = 51,
+    helloworld_fcn_id_oe_syscall_shutdown_ocall = 52,
+    helloworld_fcn_id_oe_syscall_setsockopt_ocall = 53,
+    helloworld_fcn_id_oe_syscall_getsockopt_ocall = 54,
+    helloworld_fcn_id_oe_syscall_getsockname_ocall = 55,
+    helloworld_fcn_id_oe_syscall_getpeername_ocall = 56,
+    helloworld_fcn_id_oe_syscall_getaddrinfo_open_ocall = 57,
+    helloworld_fcn_id_oe_syscall_getaddrinfo_read_ocall = 58,
+    helloworld_fcn_id_oe_syscall_getaddrinfo_close_ocall = 59,
+    helloworld_fcn_id_oe_syscall_getnameinfo_ocall = 60,
+    helloworld_fcn_id_oe_syscall_nanosleep_ocall = 61,
+    helloworld_fcn_id_oe_syscall_getpid_ocall = 62,
+    helloworld_fcn_id_oe_syscall_getppid_ocall = 63,
+    helloworld_fcn_id_oe_syscall_getpgrp_ocall = 64,
+    helloworld_fcn_id_oe_syscall_getuid_ocall = 65,
+    helloworld_fcn_id_oe_syscall_geteuid_ocall = 66,
+    helloworld_fcn_id_oe_syscall_getgid_ocall = 67,
+    helloworld_fcn_id_oe_syscall_getegid_ocall = 68,
+    helloworld_fcn_id_oe_syscall_getpgid_ocall = 69,
+    helloworld_fcn_id_oe_syscall_getgroups_ocall = 70,
+    helloworld_fcn_id_oe_syscall_uname_ocall = 71,
+    helloworld_fcn_id_oe_get_supported_attester_format_ids_ocall = 72,
+    helloworld_fcn_id_oe_get_qetarget_info_ocall = 73,
+    helloworld_fcn_id_oe_get_quote_ocall = 74,
+    helloworld_fcn_id_oe_get_quote_verification_collateral_ocall = 75,
+    helloworld_fcn_id_oe_verify_quote_ocall = 76,
+    helloworld_fcn_id_oe_sgx_get_cpuid_table_ocall = 77,
+    helloworld_fcn_id_oe_sgx_backtrace_symbols_ocall = 78,
+    helloworld_fcn_id_oe_sgx_thread_wake_wait_ocall = 79,
+    helloworld_fcn_id_oe_sgx_wake_switchless_worker_ocall = 80,
+    helloworld_fcn_id_oe_sgx_sleep_switchless_worker_ocall = 81,
+>>>>>>> Stashed changes
     helloworld_fcn_id_untrusted_call_max = OE_ENUM_MAX
 };
 
 /**** OCALL marshalling structs. ****/
+<<<<<<< Updated upstream
 typedef struct _connect_args_t
 {
     oe_result_t _result;
@@ -1025,6 +1433,8 @@ typedef struct _close_args_t
     size_t deepcopy_out_buffer_size;
 } close_args_t;
 
+=======
+>>>>>>> Stashed changes
 typedef struct _oe_syscall_epoll_create1_ocall_args_t
 {
     oe_result_t _result;
@@ -2037,6 +2447,7 @@ typedef struct _oe_sgx_sleep_switchless_worker_ocall_args_t
 
 /**** OCALL functions. ****/
 
+<<<<<<< Updated upstream
 static void ocall_connect(
     uint8_t* input_buffer,
     size_t input_buffer_size,
@@ -2257,6 +2668,8 @@ done:
         pargs_out->_result = _result;
 }
 
+=======
+>>>>>>> Stashed changes
 static void ocall_oe_syscall_epoll_create1_ocall(
     uint8_t* input_buffer,
     size_t input_buffer_size,
@@ -7163,10 +7576,13 @@ done:
 /**** OCALL function table. ****/
 
 static oe_ocall_func_t __helloworld_ocall_function_table[] = {
+<<<<<<< Updated upstream
     (oe_ocall_func_t) ocall_connect,
     (oe_ocall_func_t) ocall_request,
     (oe_ocall_func_t) ocall_get_response,
     (oe_ocall_func_t) ocall_close,
+=======
+>>>>>>> Stashed changes
     (oe_ocall_func_t) ocall_oe_syscall_epoll_create1_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_epoll_wait_ocall,
     (oe_ocall_func_t) ocall_oe_syscall_epoll_wake_ocall,
@@ -7267,9 +7683,15 @@ oe_result_t oe_create_helloworld_enclave(
                settings,
                setting_count,
                __helloworld_ocall_function_table,
+<<<<<<< Updated upstream
                86,
                __helloworld_ecall_info_table,
                 8,
+=======
+               82,
+               __helloworld_ecall_info_table,
+                10,
+>>>>>>> Stashed changes
                enclave);
 }
 

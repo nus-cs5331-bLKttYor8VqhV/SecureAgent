@@ -21,9 +21,27 @@ oe_result_t oe_create_helloworld_enclave(
 /**** ECALL prototypes. ****/
 oe_result_t initialize_enclave(oe_enclave_t* enclave);
 
+<<<<<<< Updated upstream
 oe_result_t call_test(oe_enclave_t* enclave);
 
 oe_result_t call_test_2(oe_enclave_t* enclave);
+=======
+oe_result_t connect_enclave(
+    oe_enclave_t* enclave,
+    const char* server_host,
+    const char* server_port);
+
+oe_result_t request_enclave(
+    oe_enclave_t* enclave,
+    const char* http_request);
+
+oe_result_t receive_enclave(
+    oe_enclave_t* enclave,
+    char* buf,
+    int len);
+
+oe_result_t close_enclave(oe_enclave_t* enclave);
+>>>>>>> Stashed changes
 
 oe_result_t oe_get_sgx_report_ecall(
     oe_enclave_t* enclave,
@@ -59,6 +77,7 @@ oe_result_t oe_sgx_switchless_enclave_worker_thread_ecall(
     oe_enclave_worker_context_t* context);
 
 /**** OCALL prototypes. ****/
+<<<<<<< Updated upstream
 void connect(void);
 
 void request(void);
@@ -67,6 +86,8 @@ void get_response(void);
 
 void close(void);
 
+=======
+>>>>>>> Stashed changes
 oe_host_fd_t oe_syscall_epoll_create1_ocall(int flags);
 
 int oe_syscall_epoll_wait_ocall(

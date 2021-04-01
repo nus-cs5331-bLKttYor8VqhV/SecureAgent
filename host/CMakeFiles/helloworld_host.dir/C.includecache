@@ -168,6 +168,13 @@ openenclave/bits/sgx/sgxtypes.h
 
 /synced/samples/SecureAgent/host/helloworld_u.c
 helloworld_u.h
+<<<<<<< Updated upstream
+/synced/samples/SecureAgent/host/helloworld_u.h
+openenclave/edger8r/host.h
+-
+
+=======
+>>>>>>> Stashed changes
 /synced/samples/SecureAgent/host/helloworld_u.h
 openenclave/edger8r/host.h
 -
@@ -177,12 +184,4 @@ openenclave/host.h
 -
 helloworld_args.h
 /synced/samples/SecureAgent/host/helloworld_args.h
-
-/synced/samples/SecureAgent/host/host.c
-openenclave/host.h
--
-stdio.h
--
-helloworld_u.h
-/synced/samples/SecureAgent/host/helloworld_u.h
 

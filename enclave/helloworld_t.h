@@ -13,9 +13,23 @@ OE_EXTERNC_BEGIN
 /**** ECALL prototypes. ****/
 void initialize_enclave(void);
 
+<<<<<<< Updated upstream
 void call_test(void);
 
 void call_test_2(void);
+=======
+void connect_enclave(
+    const char* server_host,
+    const char* server_port);
+
+void request_enclave(const char* http_request);
+
+void receive_enclave(
+    char* buf,
+    int len);
+
+void close_enclave(void);
+>>>>>>> Stashed changes
 
 oe_result_t oe_get_sgx_report_ecall(
     const void* opt_params,
@@ -41,6 +55,7 @@ oe_result_t oe_sgx_init_context_switchless_ecall(
 void oe_sgx_switchless_enclave_worker_thread_ecall(oe_enclave_worker_context_t* context);
 
 /**** OCALL prototypes. ****/
+<<<<<<< Updated upstream
 oe_result_t connect(
     );
 
@@ -53,6 +68,8 @@ oe_result_t get_response(
 oe_result_t close(
     );
 
+=======
+>>>>>>> Stashed changes
 oe_result_t oe_syscall_epoll_create1_ocall(
     oe_host_fd_t* _retval,
     int flags);

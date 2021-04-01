@@ -49,7 +49,7 @@ def diff_index():
 
     p = subprocess.run(['git', 'diff-index', '--cached', '--name-status', 'HEAD'], stdout=subprocess.PIPE)
     stdout = p.stdout.decode().strip().splitlines()
-
+    print(stdout)
     return [line[1:].strip() for line in stdout if line[0] in 'ACM']
 
 
@@ -95,6 +95,7 @@ def git_clang_format(build_path: str, source_files: List[str]):
 
 if __name__ == '__main__':
     src = [fn for fn in diff_index() if fn in find_source_files()]
+    print(src)
     if len(src) > 0:
         cc = find_compilation_database()
         clang_tidy(cc, src)

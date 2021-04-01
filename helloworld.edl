@@ -7,9 +7,11 @@ enclave {
     from "platform.edl" import *;
 
     trusted {
-        public void initialize_enclave();
-        public void call_test();
-        public void call_test_2() transition_using_threads; 
+        public void initialize_enclave() transition_using_threads;
+        public void connect_enclave(const char* server_host, const char* server_port) transition_using_threads;
+        public void request_enclave(const char* http_request) transition_using_threads;
+        public void receive_enclave(char* buf, int len) transition_using_threads;
+        public void close_enclave() transition_using_threads;
     };
 
     untrusted {
