@@ -10,7 +10,7 @@ add_custom_command(
     --search-path ${OE_INCLUDEDIR} --search-path
     ${OE_INCLUDEDIR}/openenclave/edl/sgx)
 
-add_executable(enclave enc.c ${CMAKE_CURRENT_BINARY_DIR}/helloworld_t.c)
+add_executable(enclave enc.cpp cert.cpp ${CMAKE_CURRENT_BINARY_DIR}/helloworld_t.c)
 
 if (WIN32)
   maybe_build_using_clangw(enclave)
@@ -31,5 +31,5 @@ if (LVI_MITIGATION MATCHES ControlFlow)
 else ()
   target_link_libraries(
     enclave openenclave::oeenclave openenclave::oecrypto${OE_CRYPTO_LIB}
-    openenclave::oelibc)
+    openenclave::oelibc openenclave::oelibcxx openenclave::oehostsock openenclave::oehostresolver)
 endif ()

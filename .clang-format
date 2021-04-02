@@ -1,7 +1,8 @@
 ---
 BasedOnStyle:  WebKit
 Language: Cpp
-AlignConsecutiveMacros: true
 AlignConsecutiveAssignments: true
+AlignConsecutiveMacros: true
 AlignTrailingComments: true
+ColumnLimit: 120
 ...
