@@ -1,1 +1,0 @@
-/usr/bin/clang++-8 CMakeFiles/helloworld_host.dir/host.cpp.o CMakeFiles/helloworld_host.dir/helloworld_u.c.o -o helloworld_host  /opt/openenclave/lib/openenclave/host/liboehost.a /usr/lib/x86_64-linux-gnu/libcrypto.so /usr/lib/x86_64-linux-gnu/libdl.so -lpthread -Wl,-z,noexecstack 
