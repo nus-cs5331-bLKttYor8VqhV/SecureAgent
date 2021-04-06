@@ -1,4 +1,4 @@
-import socket
+import socket, json
 from urllib.parse import urlparse
 
 HOST = "127.0.0.1"
@@ -18,12 +18,21 @@ class EnclaveRequest:
         self.sock.connect((HOST, PORT))
         self.send(host)
         self.send(port)
-        print(port)
         self.send(request)
 
 
     def post(self, url, data):
-        pass
+        parser = urlparse(url)
+        host = parser.netloc
+        port = parser.port if parser.port else ("80" if parser.scheme == "http" else "443")
+        path = parser.path
+        json_string = json.dumps(data)
+        json_len = len(json_string)
+        request = f"""POST {path} HTTP/1.1\r\nHost: {host}\r\nContent-Type: application/json\r\nContent-Length: {json_len}\r\n\r\n{json_string}""" + "\r\n"
+        self.sock.connect((HOST, PORT))
+        self.send(host)
+        self.send(port)
+        self.send(request)
 
     def send(self, data):
         print("sending ...\n")
@@ -41,4 +50,5 @@ class Response:
 
 if __name__ == "__main__":
     a = EnclaveRequest()
-    a.get("https://httpbin.org/get")
+    d = {"test": "oo"}
+    a.post("https://httpbin.org/post", d)
