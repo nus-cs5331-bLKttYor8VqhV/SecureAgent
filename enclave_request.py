@@ -1,15 +1,13 @@
 import socket, json
 from urllib.parse import urlparse
 
-HOST = "127.0.0.1"
-PORT = 4567
 
 class EnclaveRequest:
-    def __init__(self):
+    def __init__(self, host="127.0.0.1", port=4567):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(2)
         try:        
-            self.sock.connect((HOST, PORT))
+            self.sock.connect((host, port))
         except (socket.timeout, ConnectionRefusedError):
             print("[-] SGX enclave socket server not found\n")
 
@@ -23,7 +21,11 @@ class EnclaveRequest:
         self.send(host)
         self.send(port)
         self.send(request)
-
+        print("[+] Sent")
+        self.sock.settimeout(10)
+        a = self.sock.recv(1024)
+        a = a.decode().split("\r\n")
+        print(a)
 
     def post(self, url, data):
         parser = urlparse(url)
@@ -36,6 +38,13 @@ class EnclaveRequest:
         self.send(host)
         self.send(port)
         self.send(request)
+        print("[+] Sent")
+        self.sock.settimeout(10)
+        a = self.sock.recv(1024)
+        a = a.decode().split("\r\n")
+        # Test with httpbin post
+        print(a)
+        print(json.loads(a[-1]))
 
     def send(self, data):
         try:
@@ -52,5 +61,8 @@ class Response:
 
 if __name__ == "__main__":
     a = EnclaveRequest()
-    d = {"test": "oo"}
-    a.post("https://httpbin.org/post", d)
+    # Test 1
+    """    d = {"test": "oo"}
+    a.post("https://httpbin.org/post", d)"""
+    # Test 2
+    a.get("https://httpbin.org/get?param1=2")

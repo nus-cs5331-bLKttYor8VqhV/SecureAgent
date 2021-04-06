@@ -58,6 +58,7 @@ void enclave_main()
         memset (server_port,'\0',BUFSIZ);
         memset (http_request,'\0',BUFSIZ);
         
+        // TODO: better handling of this (timeout)
         while(socket_stream->receive_from_client(server_host, BUFSIZ) <= 0){
         }
         while(socket_stream->receive_from_client(server_port, BUFSIZ) <= 0){
@@ -79,10 +80,9 @@ void enclave_main()
         memset(rec_buf,'\0',BUFSIZ);
 
         receive_enclave(rec_buf, BUFSIZ);
-        // TODO: get response back properly
-        // TODO: parse it, format it and send it to socket
-        puts("[+] Received again\n");
 
+        // TODO: parse it, format it and send it to socket ?
+        puts("[+] Received again\n");
 
         socket_stream->send_to_client(rec_buf, strlen(rec_buf));
         int ret = socket_stream->close_client();
