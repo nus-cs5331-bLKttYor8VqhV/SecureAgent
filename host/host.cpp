@@ -38,8 +38,8 @@ int main(int argc, const char* argv[])
 
     oe_result_t result;
     uint32_t flags                                             = OE_ENCLAVE_FLAG_DEBUG | OE_ENCLAVE_FLAG_SIMULATE;
-    oe_enclave_setting_context_switchless_t switchless_setting = { 1, // number of host worker threads
-        0 };                                                          // number of enclave worker threads.
+    oe_enclave_setting_context_switchless_t switchless_setting = { 2, // number of host worker threads
+        2 };                                                          // number of enclave worker threads.
     oe_enclave_setting_t settings[]                            = { {
         .setting_type                 = OE_ENCLAVE_SETTING_CONTEXT_SWITCHLESS,
         .u.context_switchless_setting = &switchless_setting,
