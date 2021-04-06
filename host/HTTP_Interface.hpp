@@ -7,7 +7,7 @@ public:
         puts("[+] Creating interface");
         create_enclave(enclave_sign);
         // ECALL to initialize the enclave socket
-        initialize_enclave(enclave);
+        initialize_tls_client(enclave);
     };
 
     HTTP_Interface(const char* enclave_sign, const char* hostname, const char* port)
@@ -15,7 +15,7 @@ public:
         puts("[+] Creating interface");
         create_enclave(enclave_sign);
         // ECALL to initialize the enclave socket
-        initialize_enclave(enclave);
+        initialize_tls_client(enclave);
         this->e_connect(hostname, port);
     }
 

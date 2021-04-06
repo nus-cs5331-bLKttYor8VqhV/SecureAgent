@@ -12,14 +12,13 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <poll.h>
 
 class SocketStream {
 public:
     SocketStream(uint16_t port)
     {
         puts("[+] Creating interface");
-        oe_load_module_host_socket_interface();
-        oe_load_module_host_resolver();
 
         /* Create the listener socket. */
         if ((listener = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -81,7 +80,36 @@ public:
 
     }
 
+    int listen_for_client()
+    {
+        if ((client = accept(listener, NULL, NULL)) < 0){
+            printf("accept() failed: errno=%d\n", errno);
+            return -1;
+        }
+        return 0;
+    }
 
+    int receive_from_client(char* buf, int len){
+        assert(client != 0);
+        struct pollfd fd;
+        int ret;
+        fd.fd = client;
+        fd.events = POLLIN;
+        ret = poll(&fd, 1, 1000); // 1 second for timeout
+        switch (ret) {
+            case -1:
+                return -1;
+            case 0:
+                return -2;
+            default:
+                return read(client, buf, len); // get your data
+        }
+    }
+
+    int close_client(){
+        return close(client);
+    }
 private:
     int listener;
+    int client{0};
 };

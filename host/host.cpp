@@ -52,7 +52,7 @@ int main(int argc, const char* argv[])
     }
 
     // Run server
-    socket_test(enclave, 4567);
+    enclave_main(enclave);
 
     return 0;
 }

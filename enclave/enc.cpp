@@ -39,13 +39,39 @@ void enclave_main()
         get response back
         send what is needed to Python interface lib
     */
-
-}
-
-void initialize_enclave()
-{
     oe_load_module_host_socket_interface();
     oe_load_module_host_resolver();
+
+    socket_stream = new SocketStream(4567);
+    while(1){
+        while(socket_stream->listen_for_client() != 0){
+        }
+        puts("[+] Connected to client");
+        char buffer[4096] = {0};
+        while(socket_stream->receive_from_client(buffer, sizeof(buffer)) <= 0){
+        }
+        puts("[+] Received");
+
+        // TODO: process bank request
+        const char* server_host = "test";
+        const char* server_port = "4543";
+        const char* http_request = "";
+
+        initialize_tls_client();
+        connect_enclave(server_host, server_port);
+        request_enclave(http_request);
+
+        // TODO: get response back properly
+
+        // TODO: parse it, format it and send it to socket
+
+        int ret = socket_stream->close_client();
+        puts("[+] Client closed");
+    }
+}
+
+void initialize_tls_client()
+{
 
     try {
         tls_client = new TLSClient(mbedtls_test_cas_pem);
@@ -59,7 +85,7 @@ void connect_enclave(const char* server_host, const char* server_port)
 {
     try {
         if (tls_client == NULL) {
-            initialize_enclave();
+            initialize_tls_client();
         }
         tls_client->connect(server_host, server_port);
         puts("[+] Enclave connected");
