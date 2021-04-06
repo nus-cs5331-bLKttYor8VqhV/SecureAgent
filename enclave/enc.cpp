@@ -46,27 +46,46 @@ void enclave_main()
     while(1){
         while(socket_stream->listen_for_client() != 0){
         }
-        puts("[+] Connected to client");
-        char buffer[4096] = {0};
-        while(socket_stream->receive_from_client(buffer, sizeof(buffer)) <= 0){
+        puts("[+] Connected to client\n");
+        char server_host[BUFSIZ] = {0};
+        char http_request[BUFSIZ] = {0};
+        char server_port[BUFSIZ] = {0};
+        
+        memset (server_host,'\0',BUFSIZ);
+        memset (server_port,'\0',BUFSIZ);
+        memset (http_request,'\0',BUFSIZ);
+        // 
+        while(socket_stream->receive_from_client(server_host, BUFSIZ) <= 0){
         }
-        puts("[+] Received");
+        int i = 0;
+        while(socket_stream->receive_from_client(server_port, BUFSIZ) <= 0){
+        }
+        printf("%d\n", i);
+        while(socket_stream->receive_from_client(http_request, BUFSIZ) <= 0){
+        }
 
-        // TODO: process bank request
-        const char* server_host = "test";
-        const char* server_port = "4543";
-        const char* http_request = "";
+        puts("[+] Received\n");
 
+        printf("%s\n%s\n%s\n%d\n", server_host, server_port, http_request, strlen(server_port));
+        
         initialize_tls_client();
         connect_enclave(server_host, server_port);
         request_enclave(http_request);
 
+        puts("[+] Request sent, waiting\n");
+
+        char rec_buf[BUFSIZ] = {0};
+        receive_enclave(rec_buf, BUFSIZ);
         // TODO: get response back properly
 
         // TODO: parse it, format it and send it to socket
+        puts("[+] Received again\n");
 
+
+        socket_stream->send_to_client(rec_buf, strlen(rec_buf));
         int ret = socket_stream->close_client();
-        puts("[+] Client closed");
+        printf("%s\n", rec_buf);
+        puts("[+] Client close\n");
     }
 }
 

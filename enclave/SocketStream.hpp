@@ -1,18 +1,18 @@
-#include <stdexcept>
-#include <cstdio>
-#include <openenclave/enclave.h>
-#include <openenclave/bits/module.h>
 #include <arpa/inet.h>
+#include <cstdio>
 #include <errno.h>
 #include <netinet/in.h>
+#include <openenclave/bits/module.h>
+#include <openenclave/enclave.h>
+#include <poll.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <poll.h>
 
 class SocketStream {
 public:
@@ -26,7 +26,7 @@ public:
 
         /* Reuse this server address. */
         {
-            const int opt = 1;
+            const int opt           = 1;
             const socklen_t opt_len = sizeof(opt);
 
             if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, opt_len) != 0)
@@ -39,9 +39,9 @@ public:
             const int backlog = 10;
 
             memset(&addr, 0, sizeof(addr));
-            addr.sin_family = AF_INET;
+            addr.sin_family      = AF_INET;
             addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-            addr.sin_port = htons(port);
+            addr.sin_port        = htons(port);
 
             if (bind(listener, (struct sockaddr*)&addr, sizeof(addr)) != 0)
                 printf("bind() failed: errno=%d", errno);
@@ -53,11 +53,10 @@ public:
 
     void test_echo_server()
     {
-        for (;;)
-        {
+        for (;;) {
             int client;
             uint64_t value;
-            char buffer[4096] = {0};
+            char buffer[4096] = { 0 };
 
             if ((client = accept(listener, NULL, NULL)) < 0)
                 printf("accept() failed: errno=%d\n", errno);
@@ -70,46 +69,51 @@ public:
 
             close(client);
             printf("Value : %c ; len = %lu\n", buffer[0], sizeof(buffer[0]));
-            if (buffer[0] == 'e'){
+            if (buffer[0] == 'e') {
                 printf("Closing ...\n");
                 break;
             }
         }
 
         close(listener);
-
     }
 
     int listen_for_client()
     {
-        if ((client = accept(listener, NULL, NULL)) < 0){
+        if ((client = accept(listener, NULL, NULL)) < 0) {
             printf("accept() failed: errno=%d\n", errno);
             return -1;
         }
         return 0;
     }
 
-    int receive_from_client(char* buf, int len){
+    int receive_from_client(char* buf, int len)
+    {
         assert(client != 0);
         struct pollfd fd;
         int ret;
-        fd.fd = client;
+        fd.fd     = client;
         fd.events = POLLIN;
-        ret = poll(&fd, 1, 1000); // 1 second for timeout
+        ret       = poll(&fd, 1, 1000); // 1 second for timeout
         switch (ret) {
-            case -1:
-                return -1;
-            case 0:
-                return -2;
-            default:
-                return read(client, buf, len); // get your data
+        case -1:
+            return -1;
+        case 0:
+            return -2;
+        default:
+            int i = read(client, buf, len); // get your data
+            printf("rec %d\n", i); // FIXME: doesnt work
+            const char* ack =  "ACK";
+            send(client, ack, 3, 0);
+            return i;
         }
     }
 
-    int close_client(){
-        return close(client);
-    }
+    int send_to_client(char* buf, int len) { return send(client, buf, len, 0); }
+
+    int close_client() { return close(client); }
+
 private:
     int listener;
-    int client{0};
+    int client { 0 };
 };
