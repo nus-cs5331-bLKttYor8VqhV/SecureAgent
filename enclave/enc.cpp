@@ -2,6 +2,7 @@
 #include "SocketStream.hpp"
 
 #include "helloworld_t.h"
+#include <unistd.h>
 
 TLSClient* tls_client;
 SocketStream* socket_stream;
@@ -46,7 +47,9 @@ void enclave_main()
     while(1){
         while(socket_stream->listen_for_client() != 0){
         }
-        puts("[+] Connected to client\n");
+        puts("[+] Python library connected\n");
+
+        // Initialize the rec buffers and receive
         char server_host[BUFSIZ] = {0};
         char http_request[BUFSIZ] = {0};
         char server_port[BUFSIZ] = {0};
@@ -54,13 +57,11 @@ void enclave_main()
         memset (server_host,'\0',BUFSIZ);
         memset (server_port,'\0',BUFSIZ);
         memset (http_request,'\0',BUFSIZ);
-        // 
+        
         while(socket_stream->receive_from_client(server_host, BUFSIZ) <= 0){
         }
-        int i = 0;
         while(socket_stream->receive_from_client(server_port, BUFSIZ) <= 0){
         }
-        printf("%d\n", i);
         while(socket_stream->receive_from_client(http_request, BUFSIZ) <= 0){
         }
 
@@ -75,9 +76,10 @@ void enclave_main()
         puts("[+] Request sent, waiting\n");
 
         char rec_buf[BUFSIZ] = {0};
+        memset(rec_buf,'\0',BUFSIZ);
+
         receive_enclave(rec_buf, BUFSIZ);
         // TODO: get response back properly
-
         // TODO: parse it, format it and send it to socket
         puts("[+] Received again\n");
 

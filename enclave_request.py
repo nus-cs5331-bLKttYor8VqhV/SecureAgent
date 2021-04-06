@@ -8,6 +8,11 @@ class EnclaveRequest:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(2)
+        try:        
+            self.sock.connect((HOST, PORT))
+        except (socket.timeout, ConnectionRefusedError):
+            print("[-] SGX enclave socket server not found\n")
+
 
     def get(self, url):
         parser = urlparse(url)
@@ -15,7 +20,6 @@ class EnclaveRequest:
         port = parser.port if parser.port else ("80" if parser.scheme == "http" else "443")
         path = parser.path
         request = f"""GET {path} HTTP/1.1\r\nHost: {host}\r\n\r\n"""
-        self.sock.connect((HOST, PORT))
         self.send(host)
         self.send(port)
         self.send(request)
@@ -29,18 +33,16 @@ class EnclaveRequest:
         json_string = json.dumps(data)
         json_len = len(json_string)
         request = f"""POST {path} HTTP/1.1\r\nHost: {host}\r\nContent-Type: application/json\r\nContent-Length: {json_len}\r\n\r\n{json_string}""" + "\r\n"
-        self.sock.connect((HOST, PORT))
         self.send(host)
         self.send(port)
         self.send(request)
 
     def send(self, data):
-        print("sending ...\n")
         try:
             self.sock.send(data.encode("ascii"))
             a = self.sock.recv(3)
             assert(a==b"ACK")
-        except (socket.timeout, ConnectionRefusedError):
+        except socket.timeout:
             print("[-] SGX enclave socket server not found\n")
 
 class Response:
