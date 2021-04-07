@@ -1,16 +1,17 @@
 import socket
 import json
 from urllib.parse import urlparse
-
+import time
 
 class EnclaveRequest:
     def __init__(self, host="127.0.0.1", port=4567):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.settimeout(2)
-        # Can raise ConnectionRefusedError is enclave is not listening
-        self.sock.connect((host, port))
+        self.host = host
+        self.port = port
 
     def get(self, url):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(2)
+        self.sock.connect((self.host, self.port))
         # Parse url
         parser = urlparse(url)
         host = parser.netloc
@@ -33,10 +34,14 @@ class EnclaveRequest:
         # Receive response from enclave
         self.sock.settimeout(10)
         a = self.sock.recv(1024)
-        a = a.decode().split("\r\n")
-        return a
+        resp = Response(a)
+        self.sock.close()
+        return resp
 
     def post(self, url, data):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(2)
+        self.sock.connect((self.host, self.port))
         # Parse url
         parser = urlparse(url)
         host = parser.netloc
@@ -61,8 +66,9 @@ class EnclaveRequest:
         # Receive response from enclave
         self.sock.settimeout(10)
         a = self.sock.recv(1024)
-        a = a.decode().split("\r\n")
-        return a
+        resp = Response(a)
+        self.sock.close()
+        return resp
 
     def send(self, data):
         try:
@@ -74,14 +80,23 @@ class EnclaveRequest:
 
 
 class Response:
-    def __init__(self):
-        pass
+    def __init__(self, request):
+        self.raw_request = request.decode()
+        self.request = self.raw_request.split("\r\n")
+
+    def __str__(self):
+        return_list = []
+        for elem in self.request:
+            return_list.append(elem)
+        return_string = "\n".join(return_list)
+        return return_string
 
 
 if __name__ == "__main__":
     a = EnclaveRequest()
     # Test 1
-    """    d = {"test": "oo"}
-    a.post("https://httpbin.org/post", d)"""
+    d = {"test": "oo"}
+    print(a.post("https://httpbin.org/post", d))
+    time.sleep(1)
     # Test 2
     print(a.get("https://httpbin.org/get?param1=2"))
