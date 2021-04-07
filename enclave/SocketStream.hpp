@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <cassert>
 #include <cstdio>
 #include <errno.h>
 #include <netinet/in.h>
@@ -90,6 +91,7 @@ public:
     int receive_from_client(char* buf, int len)
     {
         assert(client != 0);
+        int i;
         struct pollfd fd;
         int ret;
         fd.fd     = client;
@@ -97,16 +99,18 @@ public:
         ret       = poll(&fd, 1, 1000); // 1 second for timeout
         switch (ret) {
         case -1:
+            puts("[DEBUG] Error\n");
             return -1;
         case 0:
             return -2;
         default:
-            int i = read(client, buf, len); // get your data
-            printf("rec %d\n", i); // FIXME: doesnt work
-            const char* ack =  "ACK";
-            send(client, ack, 3, 0);
-            return i;
+            i = read(client, buf, len);
         }
+        // FIXME: bug here if we remove printf
+        printf("[-] rec %d char\n", i);
+        const char* ack = "ACK";
+        send(client, ack, 3, 0);
+        return i;
     }
 
     int send_to_client(char* buf, int len) { return send(client, buf, len, 0); }
