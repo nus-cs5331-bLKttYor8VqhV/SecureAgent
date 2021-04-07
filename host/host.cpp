@@ -33,7 +33,7 @@ int main(int argc, const char* argv[])
         puts(buf);
         puts("[+] Response printed");
     */
-   // Create enclave and test
+    // Create enclave and test
     oe_enclave_t* enclave = NULL;
 
     oe_result_t result;
@@ -44,8 +44,8 @@ int main(int argc, const char* argv[])
         .setting_type                 = OE_ENCLAVE_SETTING_CONTEXT_SWITCHLESS,
         .u.context_switchless_setting = &switchless_setting,
     } };
-    result                                                     = oe_create_helloworld_enclave(
-        argv[1], OE_ENCLAVE_TYPE_SGX, flags, settings, OE_COUNTOF(settings), &enclave);
+    result
+        = oe_create_helloworld_enclave(argv[1], OE_ENCLAVE_TYPE_SGX, flags, settings, OE_COUNTOF(settings), &enclave);
     if (result != OE_OK) {
         fprintf(stderr, "oe_create_helloworld_enclave(): result=%u (%s)\n", result, oe_result_str(result));
         throw std::runtime_error("Enclave creation failed");

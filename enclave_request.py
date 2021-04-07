@@ -3,6 +3,7 @@ import json
 from urllib.parse import urlparse
 import time
 
+
 class EnclaveRequest:
     def __init__(self, host="127.0.0.1", port=4567):
         self.host = host
@@ -83,6 +84,8 @@ class Response:
     def __init__(self, request):
         self.raw_request = request.decode()
         self.request = self.raw_request.split("\r\n")
+        self.header = self.raw_request.split("\r\n\r\n")[0]
+        self.content = self.raw_request.split("\r\n\r\n")[1]
 
     def __str__(self):
         return_list = []
@@ -91,12 +94,20 @@ class Response:
         return_string = "\n".join(return_list)
         return return_string
 
+    def get_dict_from_content(self):
+        return json.loads(self.content)
+
 
 if __name__ == "__main__":
     a = EnclaveRequest()
     # Test 1
     d = {"test": "oo"}
-    print(a.post("https://httpbin.org/post", d))
+    answ = a.post("https://httpbin.org/post", d)
+    print(answ)
+    print(answ.get_dict_from_content())
     time.sleep(1)
+
     # Test 2
-    print(a.get("https://httpbin.org/get?param1=2"))
+    answ = a.get("https://httpbin.org/get?param1=2")
+    print(answ)
+    print(answ.get_dict_from_content())
