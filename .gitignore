@@ -3,6 +3,7 @@ CMakeFiles
 compile_commands.json
 .clangd
 .vscode
+.DS_Store
 
 # Prerequisites
 *.d
