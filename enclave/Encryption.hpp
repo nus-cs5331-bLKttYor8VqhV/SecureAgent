@@ -30,6 +30,13 @@
 
 using namespace std;
 
+// Errors, see :
+// https://os.mbed.com/teams/Arcola/code/mbedtls/docs/tip/bignum_8h_source.html
+// https://tls.mbed.org/api/ecp_8h.html#a20464525ea74ab8fcca9f59a12f5dc4b
+
+// Curves, see:
+// https://tls.mbed.org/api/ecp_8h.html#ae069f80bc2f9cf2215c34430a9ccd924
+
 class Encryption {
     // To decrypt the browser post request
     //FIXME: should be named decryption

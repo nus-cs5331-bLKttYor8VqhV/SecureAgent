@@ -8,7 +8,6 @@ enclave {
 
     trusted {
         public void enclave_main() transition_using_threads;
-        public void socket_test(uint16_t port) transition_using_threads;
         public void initialize_tls_client() transition_using_threads;
         public void connect_enclave(const char* server_host, const char* server_port) transition_using_threads;
         public void request_enclave(const char* http_request) transition_using_threads;

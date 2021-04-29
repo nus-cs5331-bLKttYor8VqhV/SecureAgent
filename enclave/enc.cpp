@@ -20,17 +20,14 @@ TLSClient* tls_client;
 SocketStream* socket_stream;
 char hexa_derived_secret[65];
 
-void parse_response(const char *data, long* data1, long* data2, long* data3);
-void set_ke_response(char* buf, int len, char* exported_key, int key_len);
-void decrypt_request(char *data, char* buf, int len);
-void create_point_from_coord(char* x, char* y, mbedtls_ecp_point* point);
 void parse_ecdh_request(const char *data, char* data1, char* data2);
-void create_key_exchange_answer(mbedtls_ecp_point* public_point);
 int DeriveCryptoKeyFromPassword(unsigned char *passwd, size_t pLen,
     const unsigned char *salt, const size_t saltLen,
     const size_t iterations,
     const size_t keyLen, unsigned char *derivedKey);
 void decrypt_request_new(char *data, char* buf, int len, unsigned char* iv, int iv_len);
+void set_ke_response(char* buf, int len, char* exported_key, int key_len);
+
 
 int hex_to_bytes(const char *src, int src_len, unsigned char* out, int out_len) {
     // https://stackoverflow.com/questions/1557400/hex-to-char-array-in-c
@@ -44,23 +41,17 @@ int hex_to_bytes(const char *src, int src_len, unsigned char* out, int out_len) 
         src += 2;
     }
 
-    for (dst = out; dst < end; dst++)
+    /* for (dst = out; dst < end; dst++)
         printf("%d: %c (%d, 0x%02x)\n", dst - out,
-               (isprint(*dst) ? *dst : '.'), *dst, *dst);
+               (isprint(*dst) ? *dst : '.'), *dst, *dst); */
 
     return(0);
 }
 
-void socket_test(uint16_t port)
-{
-    socket_stream = new SocketStream(4567);
-    socket_stream->test_echo_server();
-}
 
 void enclave_main()
 {
-    // Test
-
+    // Entropy
     int ret = 1;
     mbedtls_ecdh_context ctx_cli, ctx_srv;
     mbedtls_entropy_context entropy;
@@ -93,9 +84,8 @@ void enclave_main()
         exit(1);
     }
 
-
-    
     // AES Test
+    // f7 41 1c b1 de 21 c6 b6 5c 71 4 97 1e f1 d0 34
     Encryption* aa;
     char* key = "eeeeeeeeeeeeeeee";
     aa = new Encryption(key, strlen(key)*8);
@@ -111,12 +101,10 @@ void enclave_main()
 
     // Key exchange part
     srand (time(NULL));
-    long A, p, g, B, K;
-    long b = rand() % 10 + 1;
-
     char x[BUFSIZ];
     char y[BUFSIZ];
 
+    // Init socket
     oe_load_module_host_socket_interface();
     oe_load_module_host_resolver();
 
@@ -185,18 +173,19 @@ void enclave_main()
         puts("[+] Host, port and request received\n");
 
         if(strcmp(server_host, "key_exchange")==0){ // Key exchange
+            // See : https://github.com/ARMmbed/mbedtls/blob/development/programs/pkey/ecdh_curve25519.c
+            // Very useful for the ECDH flow
+
             // Parse JSON browser public key
             parse_ecdh_request(http_request, x, y);
             // Create point from x & y with right format
-            puts("[+] Creating point ...");
             mbedtls_ecp_point* browser_public_key = (mbedtls_ecp_point*)malloc(sizeof(mbedtls_ecp_point));
             mbedtls_ecp_point_init(browser_public_key);            
             int ret = mbedtls_ecp_point_read_string(browser_public_key, 16, x, y);
             if(ret != 0){
                 printf("failed\n  ! mbedtls_ecp_point_read_string ret=%d", ret);
             }
-            
-            puts("[+] Checking point ...");
+            // Check point            
             ret = mbedtls_ecp_check_pubkey( &ctx_srv.grp, browser_public_key);
             if(ret != 0){
                 printf("failed\n  ! mbedtls_ecp_check_pubkey returned %d\n", ret );
@@ -206,7 +195,7 @@ void enclave_main()
                 puts(" Valid public key on the curve");
             }
 
-            puts("[+] Key exchange ...");
+            // Compute shared secret
             ret = mbedtls_ecdh_compute_shared( &ctx_srv.grp, &ctx_srv.z,
                                         browser_public_key, &ctx_srv.d,
                                        mbedtls_ctr_drbg_random, &ctr_drbg );
@@ -214,7 +203,7 @@ void enclave_main()
                 printf("[-] failed\n ! mbedtls_ecdh_compute_shared returned ret=%d\n", ret);
             }
 
-            // Send x & y from server
+            // Send x & y (server public key) to browser
             unsigned char export_pub_key[BUFSIZ];
             size_t* oo = (size_t*)malloc(sizeof(size_t));
             ret = mbedtls_ecp_point_write_binary(&ctx_srv.grp, &ctx_srv.Q, MBEDTLS_ECP_PF_UNCOMPRESSED, oo, export_pub_key, BUFSIZ );
@@ -223,11 +212,6 @@ void enclave_main()
                 printf( " failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret );
                 exit(1);
             }
-            printf("%zu\n", *oo);
-            for(int i=0; i<*oo; i++){
-                printf("%d ", export_pub_key[i]);
-            }
-            printf("\n");
             //printf("%s\n", export_pub_key);
             char rec_buf[2*BUFSIZ] = { 0 };
             memset(rec_buf, '\0', 2*BUFSIZ);
@@ -252,12 +236,6 @@ void enclave_main()
                 printf( " failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret );
                 exit(1);
             }
-            int lenn = 32;
-            printf("Len of binary: %d\n", lenn);
-            for(int i=0; i < lenn; i++) {
-                printf("%d ", shared_secret[i]);
-            }
-            printf("\n");
 
             char hexa_shared_secret[65];
             for( int i = 0; i < 32; ++i )
@@ -267,7 +245,7 @@ void enclave_main()
                 hexa_shared_secret[2*i+1] = hex_chars[ ( byte & 0x0F ) >> 0 ];
             }
             hexa_shared_secret[64] = '\0';
-            printf("\n %s \n", hexa_shared_secret);
+            printf("Shared secret: %s \n", hexa_shared_secret);
             
             const unsigned char* salt = reinterpret_cast<const unsigned char *>( "Websecurity" );
 
@@ -281,9 +259,10 @@ void enclave_main()
                 hexa_derived_secret[2*i+1] = hex_chars[ ( byte & 0x0F ) >> 0 ];
             }
             hexa_derived_secret[64] = '\0';
-            printf("\n %s \n", hexa_derived_secret);
+            printf("\nDerived secret %s \n", hexa_derived_secret);
 
-
+            // See https://forums.mbed.com/t/unable-to-calculate-ecdh-shared-secret-from-x-and-y-coordinates/5606 for details
+            // mbedtls_mpi_write_binary outputs (4 || x || y)
             set_ke_response(rec_buf, 2*BUFSIZ, hexa_export_pub_key, strlen(hexa_export_pub_key));
             socket_stream->send_to_client(rec_buf, strlen(rec_buf));
             ret = socket_stream->close_client();
@@ -371,109 +350,6 @@ void close_enclave()
     }
 }
 
-void parse_response(const char *data, long* data1, long* data2, long* data3){
-    // Parse DHKE request to get parameters
-    char *str2, *saveptr2;
-    char *del = "{";
-    char *str = strdup(data);
-    int i = 0;
-    char *rest = NULL;
-    char *token = strtok_r(str, "{", &rest);
-    token = strtok_r(NULL, "}", &rest);
-    // Token is the JSON Content
-    // "public_key": 13, "q": 19, "a": 15
-    //TODO: delete this part, useless with the next regex
-    printf("%s\n", token);
-    
-    // Extraction of several sub-matches
-    const std::regex pieces_regex("\"public_key\": ([0-9]+), \"q\": ([0-9]+), \"a\": ([0-9]+)");
-    std::smatch pieces_match;
-    std::string token_str(token);
-
-    if (std::regex_search(token_str, pieces_match, pieces_regex)) {
-        for (size_t i = 1; i < pieces_match.size(); ++i) {
-            std::ssub_match sub_match = pieces_match[i];
-            std::string piece = sub_match.str();
-            char* chr_to_disp = const_cast<char*>(piece.c_str());
-            int data_to_disp = atoi(chr_to_disp);
-            switch (i)
-            {
-            case 1:
-                printf("PubKey A = %d\n", data_to_disp);
-                *data1 = data_to_disp;
-                break;
-            case 2:
-                printf("qA = %d\n", data_to_disp);
-                *data2 = data_to_disp;
-                break;
-            case 3:
-                printf("aA = %d\n", data_to_disp);
-                *data3 = data_to_disp;
-                break;
-            }
-        }   
-    }
-    else{
-        printf("No match\n");
-    }
-}
-
-void set_ke_response(char* buf, int len, char* exported_key, int key_len){
-    // Create the answer of DHKE
-    char str_begin[2*BUFSIZ] = "POST /post HTTP/1.1\r\nHost: /sgx/key_exchange\r\nContent-Type: application/json\r\nContent-Length: 138\r\n\r\n{\"B\":\"";
-    char str_end[3] = "\"}";
-	strcat(str_begin, exported_key);
-    strcat(str_begin, str_end);
-    strncpy(buf, str_begin, len);
-}
-
-void decrypt_request(char *data, char* buf, int len){
-    // Decrypt each post parameter and generate the request for the bank
-    // TODO: content len, host
-    printf("%s\n", data);
-    const std::regex json_regex("\"user_name\": \"([a-f0-9]+)\", \"card_number\": \"([a-f0-9]+)\", \"month\": \"([a-f0-9]+)\", \"year\": \"([a-f0-9]+)\", \"cvc_code\": \"([a-f0-9]+)\""); 
-    std::smatch pieces_match;
-    std::string token_str(data);
-    char ch_arr[6][20] = {
-                         "\"user_name\": \"",
-                         "\", \"card_number\": \"",
-                         "\", \"month\": \"",
-                         "\", \"year\": \"",
-                         "\", \"cvc_code\": \"",
-                         "\"}"
-                     };
-
-    char str_begin[2*BUFSIZ] = "POST /post HTTP/1.1\r\nHost: httpbin.org\r\nContent-Type: application/json\r\nContent-Length: 100\r\n\r\n{";
-    if (std::regex_search(token_str, pieces_match, json_regex)) {
-        for (size_t i = 1; i < pieces_match.size(); ++i) {
-            std::ssub_match sub_match = pieces_match[i];
-            std::string piece = sub_match.str();
-            char* chr_to_disp = const_cast<char*>(piece.c_str());
-            printf("Cipher hex = %d %s\n", i, chr_to_disp);
-            unsigned char cipher_char[17];
-            hex_to_bytes(chr_to_disp, strlen(chr_to_disp), cipher_char, 16);
-
-            Encryption* aa;
-            char* key = "eeeeeeeeeeeeeeee";
-            aa = new Encryption(key, strlen(key)*8);
-
-            unsigned char output[17];
-            unsigned char m_iv[IV_SIZE]
-                = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
-            aa->decrypt_block(cipher_char, output, 16, m_iv);
-            output[16] = '\0';
-            strcat(str_begin, ch_arr[i-1]);
-            strcat(str_begin, (char*) output);
-        }   
-        strcat(str_begin, ch_arr[5]);
-        printf("%s\n", str_begin);
-        strncpy(buf, str_begin, len);
-    }
-    else{
-        printf("No match\n");
-    }
-}
-
 void parse_ecdh_request(const char *data, char* data1, char* data2){
     char *str2, *saveptr2;
     char *del = "{";
@@ -518,14 +394,10 @@ void parse_ecdh_request(const char *data, char* data1, char* data2){
 int DeriveCryptoKeyFromPassword(unsigned char *passwd, size_t pLen, const unsigned char *salt, const size_t saltLen, const size_t iterations,
     const size_t keyLen, unsigned char *derivedKey)
 {
+    // https://github.com/Samsung/TizenRT/blob/master/external/iotivity/iotivity_1.2-rel/resource/csdk/security/src/pbkdf2.c
     mbedtls_md_context_t sha_ctx;
     const mbedtls_md_info_t *info_sha;
     int ret = -1;
-
-    printf("Salt control");
-    for(int i=0; i<saltLen; i++){
-        printf("%d ", salt[i]);
-    }
 
     mbedtls_md_init(&sha_ctx);
 
@@ -556,7 +428,6 @@ int DeriveCryptoKeyFromPassword(unsigned char *passwd, size_t pLen, const unsign
 void decrypt_request_new(char *data, char* buf, int len, unsigned char* iv, int iv_len){
     // Decrypt each post parameter and generate the request for the bank
     // TODO: content len, host
-    printf("%s\n", data);
     const std::regex json_regex("\"enc\": \"([a-f0-9]+)\", \"iv\": \"([a-f0-9]+)\""); 
     std::smatch pieces_match;
     std::string token_str(data);
@@ -571,8 +442,9 @@ void decrypt_request_new(char *data, char* buf, int len, unsigned char* iv, int 
         std::string iv = sub_match.str();
         unsigned char* iv_uc = (unsigned char*)(iv.c_str());
         char* iv_uc_2 = (char*)(iv.c_str());
-        printf("IV lne : %s \n", iv_uc_2);
+        printf("IV : %s \n", iv_uc_2);
         
+        // Hex string to byte array, https://stackoverflow.com/questions/3408706/hexadecimal-string-to-byte-array-in-c
         const char *pos = iv_uc_2;
         unsigned char m_iv[IV_SIZE];
 
@@ -610,6 +482,9 @@ void decrypt_request_new(char *data, char* buf, int len, unsigned char* iv, int 
         aa->decrypt_block(cipher_char, output, enc_length/2, m_iv);
         output[enc_length/2] = '\0';
         int out_len = enc_length/2;
+
+        // Remove the padding by shortening the output
+        // pkcs5/7
         for(int i=0; i<enc_length/2; i++){
             if(output[i] < 17){
                 output[i] = '\0';
@@ -631,4 +506,13 @@ void decrypt_request_new(char *data, char* buf, int len, unsigned char* iv, int 
     else{
         printf("No match\n");
     }
+}
+
+void set_ke_response(char* buf, int len, char* exported_key, int key_len){
+    // Create the answer of DHKE
+    char str_begin[2*BUFSIZ] = "POST /post HTTP/1.1\r\nHost: /sgx/key_exchange\r\nContent-Type: application/json\r\nContent-Length: 138\r\n\r\n{\"B\":\"";
+    char str_end[3] = "\"}";
+	strcat(str_begin, exported_key);
+    strcat(str_begin, str_end);
+    strncpy(buf, str_begin, len);
 }
