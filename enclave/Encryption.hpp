@@ -44,7 +44,7 @@ public:
         }
     };
 
-    int decrypt_block(unsigned char* input_buffer, unsigned char* output_buffer, size_t size)
+    int decrypt_block(unsigned char* input_buffer, unsigned char* output_buffer, size_t size, unsigned char* m_iv)
     {
         int ret = 0;
 
@@ -63,6 +63,4 @@ public:
 
 private:
     mbedtls_aes_context m_aescontext;
-    unsigned char m_iv[IV_SIZE]
-        = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
 };
