@@ -1,36 +1,12 @@
 #pragma once
 
-#include <arpa/inet.h>
-#include <cassert>
 #include <cstdio>
-#include <errno.h>
-#include <netinet/in.h>
-#include <poll.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdexcept>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
-#include <unistd.h>
 
 #include <mbedtls/aes.h>
-#include <mbedtls/config.h>
-#include <mbedtls/ctr_drbg.h>
-#include <mbedtls/entropy.h>
-#include <mbedtls/error.h>
-#include <mbedtls/md.h>
-#include <mbedtls/pk.h>
 
-#include <openenclave/bits/module.h>
 #include <openenclave/enclave.h>
 
-#define HASH_VALUE_SIZE_IN_BYTES     32  // sha256 hashing algorithm
-#define ENCRYPTION_KEY_SIZE          256 // AES256-CBC encryption algorithm
-#define ENCRYPTION_KEY_SIZE_IN_BYTES (ENCRYPTION_KEY_SIZE / 8)
-#define IV_SIZE                      16 // determined by AES256-CBC
-#define SALT_SIZE_IN_BYTES           IV_SIZE
+#define IV_SIZE 16 // determined by AES256-CBC
 
 // Errors, see :
 // https://os.mbed.com/teams/Arcola/code/mbedtls/docs/tip/bignum_8h_source.html
