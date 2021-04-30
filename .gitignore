@@ -2,6 +2,7 @@ build
 CMakeFiles
 compile_commands.json
 .clangd
+.cache
 .vscode
 .DS_Store
 
