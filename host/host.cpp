@@ -2,10 +2,11 @@
 // Licensed under the MIT License.
 
 #include <cstdio>
+#include <stdexcept>
 
 #include <openenclave/host.h>
 
-#include "HTTP_Interface.hpp"
+#include "helloworld_u.h"
 
 int main(int argc, const char* argv[])
 {

@@ -28,6 +28,12 @@ int DeriveCryptoKeyFromPassword(unsigned char* passwd, size_t pLen, const unsign
 void decrypt_request_new(char* data, char* buf, int len, unsigned char* iv, int iv_len);
 void set_ke_response(char* buf, int len, char* exported_key, int key_len);
 
+void initialize_tls_client();
+void connect_enclave(const char* server_host, const char* server_port);
+void request_enclave(const char* http_request);
+void receive_enclave(char* buf, int len);
+void close_enclave();
+
 int hex_to_bytes(const char* src, int src_len, unsigned char* out, int out_len)
 {
     // https://stackoverflow.com/questions/1557400/hex-to-char-array-in-c
