@@ -171,15 +171,17 @@ void enclave_main()
 
             // Parse JSON browser public key
             parse_ecdh_request(http_request, x, y);
+
             // Create point from x & y with right format
-            mbedtls_ecp_point* browser_public_key = (mbedtls_ecp_point*)malloc(sizeof(mbedtls_ecp_point));
-            mbedtls_ecp_point_init(browser_public_key);
-            int ret = mbedtls_ecp_point_read_string(browser_public_key, 16, x, y);
+            mbedtls_ecp_point browser_public_key;
+
+            mbedtls_ecp_point_init(&browser_public_key);
+            int ret = mbedtls_ecp_point_read_string(&browser_public_key, 16, x, y);
             if (ret != 0) {
                 printf("failed\n  ! mbedtls_ecp_point_read_string ret=%d", ret);
             }
             // Check point
-            ret = mbedtls_ecp_check_pubkey(&ctx_srv.grp, browser_public_key);
+            ret = mbedtls_ecp_check_pubkey(&ctx_srv.grp, &browser_public_key);
             if (ret != 0) {
                 printf("failed\n  ! mbedtls_ecp_check_pubkey returned %d\n", ret);
                 exit(1);
@@ -189,16 +191,16 @@ void enclave_main()
 
             // Compute shared secret
             ret = mbedtls_ecdh_compute_shared(
-                &ctx_srv.grp, &ctx_srv.z, browser_public_key, &ctx_srv.d, mbedtls_ctr_drbg_random, &ctr_drbg);
+                &ctx_srv.grp, &ctx_srv.z, &browser_public_key, &ctx_srv.d, mbedtls_ctr_drbg_random, &ctr_drbg);
             if (ret != 0) {
                 printf("[-] failed\n ! mbedtls_ecdh_compute_shared returned ret=%d\n", ret);
             }
 
             // Send x & y (server public key) to browser
             unsigned char export_pub_key[BUFSIZ];
-            size_t* oo = (size_t*)malloc(sizeof(size_t));
-            ret        = mbedtls_ecp_point_write_binary(
-                &ctx_srv.grp, &ctx_srv.Q, MBEDTLS_ECP_PF_UNCOMPRESSED, oo, export_pub_key, BUFSIZ);
+            size_t oo;
+            ret = mbedtls_ecp_point_write_binary(
+                &ctx_srv.grp, &ctx_srv.Q, MBEDTLS_ECP_PF_UNCOMPRESSED, &oo, export_pub_key, BUFSIZ);
             if (ret != 0) {
                 printf(" failed\n  ! mbedtls_mpi_write_binary returned %d\n", ret);
                 exit(1);
@@ -210,13 +212,13 @@ void enclave_main()
             // Convert binary to hex
             char hex_chars[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-            char hexa_export_pub_key[2 * *oo + 1];
-            for (int i = 0; i < *oo; ++i) {
+            char hexa_export_pub_key[2 * oo + 1];
+            for (int i = 0; i < oo; ++i) {
                 char byte                      = export_pub_key[i];
                 hexa_export_pub_key[2 * i]     = hex_chars[(byte & 0xF0) >> 4];
                 hexa_export_pub_key[2 * i + 1] = hex_chars[(byte & 0x0F) >> 0];
             }
-            hexa_export_pub_key[2 * *oo] = '\0';
+            hexa_export_pub_key[2 * oo] = '\0';
 
             unsigned char shared_secret[512];
             size_t aa;
