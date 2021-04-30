@@ -94,7 +94,6 @@ void enclave_main()
     }
 
     // Key exchange part
-    srand(time(NULL));
     char x[BUFSIZ];
     char y[BUFSIZ];
 
