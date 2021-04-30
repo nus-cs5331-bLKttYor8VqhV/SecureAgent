@@ -1,10 +1,11 @@
+#pragma once
+
 #include <arpa/inet.h>
 #include <cassert>
 #include <cstdio>
 #include <errno.h>
 #include <netinet/in.h>
-#include <openenclave/bits/module.h>
-#include <openenclave/enclave.h>
+
 #include <poll.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -14,6 +15,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
+
+#include <openenclave/bits/module.h>
+#include <openenclave/enclave.h>
 
 class SocketStream {
 public:
