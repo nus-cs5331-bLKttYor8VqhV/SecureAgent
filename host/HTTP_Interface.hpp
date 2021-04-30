@@ -1,4 +1,10 @@
+#pragma once
+
 #include <stdexcept>
+
+#include <openenclave/host.h>
+
+#include "helloworld_u.h"
 
 class HTTP_Interface {
 public:
