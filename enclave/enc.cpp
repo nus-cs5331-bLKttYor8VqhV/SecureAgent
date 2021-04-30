@@ -86,15 +86,14 @@ void enclave_main()
 
     // AES Test
     // f7 41 1c b1 de 21 c6 b6 5c 71 4 97 1e f1 d0 34
-    Encryption* aa;
     const char* key = "eeeeeeeeeeeeeeee";
-    aa              = new Encryption(key, strlen(key) * 8);
+    Encryption cipher(key, strlen(key) * 8);
 
     unsigned char input[17] = "aaaaaaaaaaaaaaaa";
     unsigned char output[16];
     unsigned char m_iv[IV_SIZE]
         = { 0xb2, 0x4b, 0xf2, 0xf7, 0x7a, 0xc5, 0xec, 0x0c, 0x5e, 0x1f, 0x4d, 0xc1, 0xae, 0x46, 0x5e, 0x75 };
-    aa->decrypt_block(input, output, 16, m_iv);
+    cipher.decrypt_block(input, output, 16, m_iv);
     for (int i = 0; i < 16; i++) {
         printf("%x ", output[i]);
     }
