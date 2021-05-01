@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 
 cmake_minimum_required(VERSION 3.11)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (LVI_MITIGATION MATCHES ControlFlow)
